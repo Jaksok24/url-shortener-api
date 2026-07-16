@@ -1,12 +1,14 @@
 # URL Shortener API
 
-A backend API for creating and managing shortened URLs.  
-This project is being built as a portfolio application with a focus on clean backend practices, testing, containerization, and CI/CD.
+A backend API for generating short codes for URLs and redirecting users to the original address.
+
+This project is being built as a portfolio application focused on clean backend practices, validation, testing, containerization, and CI/CD.
 
 ## Tech stack
 
 - Python 3.13
 - FastAPI
+- Pydantic
 - Uvicorn
 
 ## Getting started
@@ -43,7 +45,7 @@ The API will be available at:
 http://127.0.0.1:8000
 ```
 
-## Available endpoints
+## API endpoints
 
 ### Health check
 
@@ -59,15 +61,60 @@ Response:
 }
 ```
 
+### Create a short URL code
+
+```http
+POST /urls
+```
+
+Request body:
+
+```json
+{
+  "original_url": "https://www.example.com"
+}
+```
+
+Response — `201 Created`:
+
+```json
+{
+  "short_code": "aB3k9x"
+}
+```
+
+The API validates the submitted URL and returns `422 Unprocessable Content` for invalid input.
+
+### Redirect to the original URL
+
+```http
+GET /{short_code}
+```
+
+Example:
+
+```text
+http://127.0.0.1:8000/aB3k9x
+```
+
+If the code exists, the API returns a `307 Temporary Redirect` to the original URL. If it does not exist, the API returns `404 Not Found`.
+
 ## API documentation
 
-FastAPI automatically generates interactive API documentation:
+FastAPI automatically generates interactive documentation:
 
 - Swagger UI: `http://127.0.0.1:8000/docs`
 - ReDoc: `http://127.0.0.1:8000/redoc`
 
-## Project status
+## Current limitations
 
-In progress. The first implemented feature is the health-check endpoint.
+URLs are currently stored in memory, so all generated codes are lost when the application restarts.
 
-Planned next steps include URL creation, redirects, persistent storage, automated tests, Docker, and CI/CD.
+## Planned improvements
+
+- Persistent storage with PostgreSQL
+- Automated tests with pytest
+- Docker and Docker Compose
+- CI/CD with GitHub Actions
+- Custom aliases and URL expiration dates
+- Click analytics
