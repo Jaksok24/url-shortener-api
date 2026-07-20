@@ -3,8 +3,11 @@ from fastapi.responses import RedirectResponse
 
 from app.schemas import CreateShortUrlRequest, CreateShortUrlResponse
 from app.services.urls import create_short_code, get_original_url
+from app.database import Base, engine
 
 app = FastAPI()
+
+Base.metadata.create_all(engine)
 
 @app.get("/health", status_code=200)
 def check_health():
